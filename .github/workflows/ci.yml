@@ -92,5 +92,5 @@ jobs:
         with:
           name: ${{ inputs.project-name }}
           path: |
-            ${{ github.workspace }}/${{ inputs.working-directory }}/build/jacoco.exec
-            ${{ github.workspace }}/${{ inputs.working-directory }}/build/site
+            ${{ github.workspace }}/${{ inputs.working-directory }}/build/jacoco
+            ${{ github.workspace }}/${{ inputs.working-directory }}/build/reports
