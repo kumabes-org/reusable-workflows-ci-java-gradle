@@ -45,11 +45,8 @@ jobs:
 
       - name: "Check Wrapper Exists"
         run: |
-          count_gradle_groovy=$(find . -type f -name build.gradle 2>/dev/null | wc -l)
           count_gradle_kotlin=$(find . -type f -name build.gradle.kts 2>/dev/null | wc -l)
-          if [ "${count_gradle_groovy}" -ge "1" ]; then
-            echo "setup_gradle=false" >> $GITHUB_ENV
-          elfi [ "${count_gradle_kotlin}" -ge "1" ]; then
+          fi [ "${count_gradle_kotlin}" -ge "1" ]; then
             echo "setup_gradle=false" >> $GITHUB_ENV          
           else
             echo "setup_gradle=true" >> $GITHUB_ENV
@@ -92,15 +89,12 @@ jobs:
       
       - name: "Check Wrapper Exists"
         run: |
-          count_gradle_groovy=$(find . -type f -name build.gradle 2>/dev/null | wc -l)
           count_gradle_kotlin=$(find . -type f -name build.gradle.kts 2>/dev/null | wc -l)
-          if [ "${count_gradle_groovy}" -ge "1" ]; then
-            echo "setup_gradle=false" >> $GITHUB_ENV
-          elfi [ "${count_gradle_kotlin}" -ge "1" ]; then
+          fi [ "${count_gradle_kotlin}" -ge "1" ]; then
             echo "setup_gradle=false" >> $GITHUB_ENV          
           else
             echo "setup_gradle=true" >> $GITHUB_ENV
-          fi    
+          fi      
       
       - name: Setup Gradle
         if: ${{ env.setup_gradle == true }}
