@@ -60,7 +60,7 @@ jobs:
      
       - name: Gradle Build
         run: |          
-          if [[ ${{ env.setup_gradle }} ]]; then
+          if [[ ${{ env.setup_gradle == true }} ]]; then
             echo "Utilizando do instalador"
             gradle build -x test --parallel
           else
@@ -104,7 +104,7 @@ jobs:
 
       - name: Gradle Test
         run: |
-          if [[ ${{ env.setup_gradle }} ]]; then
+          if [[ ${{ env.setup_gradle == true }} ]]; then
             echo "Utilizando do instalador"
             gradle test --parallel
           else
