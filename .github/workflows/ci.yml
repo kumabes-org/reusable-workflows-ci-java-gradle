@@ -43,18 +43,33 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
           java-version: ${{ inputs.java-version }}
 
+      - name: "Check Wrapper Exists"
+        run: |
+          count_gradle_groovy=$(find . -type f -name build.gradle 2>/dev/null | wc -l)
+          count_gradle_kotlin=$(find . -type f -name build.gradle.kts 2>/dev/null | wc -l)
+          if [[ "${count_gradle_groovy}" -ge "1" ]]; then
+            echo "setup_gradle=false" >> $GITHUB_ENV
+          elfi [[ "${count_gradle_kotlin}" -ge "1" ]]; then
+            echo "setup_gradle=false" >> $GITHUB_ENV          
+          else
+            echo "setup_gradle=true" >> $GITHUB_ENV
+          fi      
+
       - name: Setup Gradle
+        if: ${{ env.setup_gradle == true }}
         uses: gradle/gradle-build-action@v2      
         with:
           gradle-version: ${{ inputs.gradle-version }}
      
       - name: Gradle Build
-        run: |
-          echo "Antes de empacotar"
-          ls -lrth --color
-          gradle build -x test --parallel
-          echo "Depois de empacotar"
-          ls -lrth --color
+        run: |          
+          if [[ ${{ env.setup_gradle }} ]]; then
+            echo "Utilizando do instalador"
+            gradle build -x test --parallel
+          else
+            echo "Utilizando Wrapper"
+            ./gradlew build -x test --parallel
+          fi       
 
       - uses: actions/upload-artifact@v3
         with:
@@ -79,8 +94,10 @@ jobs:
         run: |
           count_gradle_groovy=$(find . -type f -name build.gradle 2>/dev/null | wc -l)
           count_gradle_kotlin=$(find . -type f -name build.gradle.kts 2>/dev/null | wc -l)
-          if [[ "${count_gradle_groovy}" -ge "1" || "${count_gradle_kotlin}" -ge "1" ]]; then
+          if [[ "${count_gradle_groovy}" -ge "1" ]]; then
             echo "setup_gradle=false" >> $GITHUB_ENV
+          elfi [[ "${count_gradle_kotlin}" -ge "1" ]]; then
+            echo "setup_gradle=false" >> $GITHUB_ENV          
           else
             echo "setup_gradle=true" >> $GITHUB_ENV
           fi      
@@ -93,7 +110,7 @@ jobs:
 
       - name: Gradle Test
         run: |
-          if [[ ${{ env.setup_maven }} ]]; then
+          if [[ ${{ env.setup_gradle }} ]]; then
             echo "Utilizando do instalador"
             gradle test --parallel
           else
