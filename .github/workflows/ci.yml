@@ -79,7 +79,7 @@ jobs:
         run: |
           count_gradle_groovy=$(find . -type f -name build.gradle 2>/dev/null | wc -l)
           count_gradle_kotlin=$(find . -type f -name build.gradle.kts 2>/dev/null | wc -l)
-          if [ "${count_gradle_groovy}" -ge "1" || "${count_gradle_kotlin}" -ge "1" ]; then
+          if [[ "${count_gradle_groovy}" -ge "1" || "${count_gradle_kotlin}" -ge "1" ]]; then
             echo "setup_gradle=false" >> $GITHUB_ENV
           else
             echo "setup_gradle=true" >> $GITHUB_ENV
