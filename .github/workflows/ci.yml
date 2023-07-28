@@ -75,18 +75,31 @@ jobs:
           distribution: ${{ inputs.java-distribution }}
           java-version: ${{ inputs.java-version }}
       
+      - name: "Check Wrapper Exists"
+        run: |
+          count_gradle_groovy=$(find . -type f -name build.gradle 2>/dev/null | wc -l)
+          count_gradle_kotlin=$(find . -type f -name build.gradle.kts 2>/dev/null | wc -l)
+          if [ "${count_gradle_groovy}" -ge "1" || "${count_gradle_kotlin}" -ge "1" ]; then
+            echo "setup_gradle=false" >> $GITHUB_ENV
+          else
+            echo "setup_gradle=true" >> $GITHUB_ENV
+          fi      
+      
       - name: Setup Gradle
+        if: ${{ env.setup_gradle == true }}
         uses: gradle/gradle-build-action@v2      
         with:
           gradle-version: ${{ inputs.gradle-version }}
 
       - name: Gradle Test
         run: |
-          echo "Antes de empacotar"
-          ls -lrth --color
-          gradle test --parallel
-          echo "Depois de empacotar"
-          ls -lrth --color
+          if [[ ${{ env.setup_maven }} ]]; then
+            echo "Utilizando do instalador"
+            gradle test --parallel
+          else
+            echo "Utilizando Wrapper"
+            ./gradlew test --parallel
+          fi        
 
       - uses: actions/upload-artifact@v3
         with:
