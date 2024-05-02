@@ -65,10 +65,10 @@ jobs:
         run: |          
           if [[ ${{ env.setup_gradle }} == true ]]; then
             echo "Utilizando do instalador"
-            gradle build -x test --parallel
+            gradle build --parallel
           else
             echo "Utilizando Wrapper"
-            ./gradlew build -x test --parallel
+            ./gradlew build --parallel
           fi       
 
       - uses: actions/upload-artifact@v4
@@ -76,51 +76,51 @@ jobs:
           name: ${{ inputs.project-name }}
           path: ${{ github.workspace }}/${{ inputs.working-directory }}/build/
 
-  Test:
-    name: Test
-    runs-on: ${{ inputs.runs-on }}
-    defaults:
-      run:
-        shell: ${{ inputs.shell }}
-        working-directory: ${{ inputs.working-directory }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v3
-        with:
-          distribution: ${{ inputs.java-distribution }}
-          java-version: ${{ inputs.java-version }}
+  # Test:
+  #   name: Test
+  #   runs-on: ${{ inputs.runs-on }}
+  #   defaults:
+  #     run:
+  #       shell: ${{ inputs.shell }}
+  #       working-directory: ${{ inputs.working-directory }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-java@v3
+  #       with:
+  #         distribution: ${{ inputs.java-distribution }}
+  #         java-version: ${{ inputs.java-version }}
       
-      - name: "Check Wrapper Exists"
-        run: |
-          count_gradle_groovy=$(find . -type f -name build.gradle 2>/dev/null | wc -l)
-          count_gradle_kotlin=$(find . -type f -name build.gradle.kts 2>/dev/null | wc -l)
-          if [ "${count_gradle_groovy}" -ge "1" ]; then
-              echo "setup_gradle=false" >> $GITHUB_ENV
-          elif [ "${count_gradle_kotlin}" -ge "1" ]; then
-              echo "setup_gradle=false" >> $GITHUB_ENV
-          else
-              echo "setup_gradle=true" >> $GITHUB_ENV
-          fi
+  #     - name: "Check Wrapper Exists"
+  #       run: |
+  #         count_gradle_groovy=$(find . -type f -name build.gradle 2>/dev/null | wc -l)
+  #         count_gradle_kotlin=$(find . -type f -name build.gradle.kts 2>/dev/null | wc -l)
+  #         if [ "${count_gradle_groovy}" -ge "1" ]; then
+  #             echo "setup_gradle=false" >> $GITHUB_ENV
+  #         elif [ "${count_gradle_kotlin}" -ge "1" ]; then
+  #             echo "setup_gradle=false" >> $GITHUB_ENV
+  #         else
+  #             echo "setup_gradle=true" >> $GITHUB_ENV
+  #         fi
       
-      - name: Setup Gradle
-        if: ${{ env.setup_gradle == true }}
-        uses: gradle/gradle-build-action@v2      
-        with:
-          gradle-version: ${{ inputs.gradle-version }}
+  #     - name: Setup Gradle
+  #       if: ${{ env.setup_gradle == true }}
+  #       uses: gradle/gradle-build-action@v2      
+  #       with:
+  #         gradle-version: ${{ inputs.gradle-version }}
 
-      - name: Gradle Test
-        run: |
-          if [[ ${{ env.setup_gradle }} == true ]]; then
-            echo "Utilizando do instalador"
-            gradle test --parallel
-          else
-            echo "Utilizando Wrapper"
-            ./gradlew test --parallel
-          fi        
+  #     - name: Gradle Test
+  #       run: |
+  #         if [[ ${{ env.setup_gradle }} == true ]]; then
+  #           echo "Utilizando do instalador"
+  #           gradle test --parallel
+  #         else
+  #           echo "Utilizando Wrapper"
+  #           ./gradlew test --parallel
+  #         fi        
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.project-name }}
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         name: ${{ inputs.project-name }}
           path: |
             ${{ github.workspace }}/${{ inputs.working-directory }}/build/jacoco
             ${{ github.workspace }}/${{ inputs.working-directory }}/build/reports
