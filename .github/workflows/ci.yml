@@ -17,16 +17,16 @@ on:
         type: string
       project-name:
         required: true
-        type: string      
+        type: string
       java-distribution:
         required: true
         type: string
       java-version:
         required: true
-        type: string           
+        type: string
       gradle-version:
         required: true
-        type: string      
+        type: string
 
 jobs:
   Build:
@@ -57,19 +57,19 @@ jobs:
 
       - name: Setup Gradle
         if: ${{ env.setup_gradle == true }}
-        uses: gradle/gradle-build-action@v2      
+        uses: gradle/gradle-build-action@v2
         with:
           gradle-version: ${{ inputs.gradle-version }}
-     
+
       - name: Gradle Build
-        run: |          
+        run: |
           if [[ ${{ env.setup_gradle }} == true ]]; then
             echo "Utilizando do instalador"
             gradle build --parallel
           else
             echo "Utilizando Wrapper"
             ./gradlew build --parallel
-          fi       
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
@@ -89,7 +89,7 @@ jobs:
   #       with:
   #         distribution: ${{ inputs.java-distribution }}
   #         java-version: ${{ inputs.java-version }}
-      
+
   #     - name: "Check Wrapper Exists"
   #       run: |
   #         count_gradle_groovy=$(find . -type f -name build.gradle 2>/dev/null | wc -l)
@@ -101,10 +101,10 @@ jobs:
   #         else
   #             echo "setup_gradle=true" >> $GITHUB_ENV
   #         fi
-      
+
   #     - name: Setup Gradle
   #       if: ${{ env.setup_gradle == true }}
-  #       uses: gradle/gradle-build-action@v2      
+  #       uses: gradle/gradle-build-action@v2
   #       with:
   #         gradle-version: ${{ inputs.gradle-version }}
 
@@ -116,11 +116,11 @@ jobs:
   #         else
   #           echo "Utilizando Wrapper"
   #           ./gradlew test --parallel
-  #         fi        
+  #         fi
 
   #     - uses: actions/upload-artifact@v4
   #       with:
   #         name: ${{ inputs.project-name }}
-          # path: |
-          #   ${{ github.workspace }}/${{ inputs.working-directory }}/build/jacoco
-          #   ${{ github.workspace }}/${{ inputs.working-directory }}/build/reports
+  #         path: |
+  #           ${{ github.workspace }}/${{ inputs.working-directory }}/build/jacoco
+  #           ${{ github.workspace }}/${{ inputs.working-directory }}/build/reports
