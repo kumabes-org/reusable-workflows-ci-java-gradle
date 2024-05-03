@@ -57,7 +57,7 @@ jobs:
 
       - name: Setup Gradle
         if: ${{ env.setup_gradle == true }}
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
         with:
           gradle-version: ${{ inputs.gradle-version }}
 
@@ -104,7 +104,7 @@ jobs:
 
   #     - name: Setup Gradle
   #       if: ${{ env.setup_gradle == true }}
-  #       uses: gradle/gradle-build-action@v2
+  #       uses: gradle/gradle-build-action@v3
   #       with:
   #         gradle-version: ${{ inputs.gradle-version }}
 
